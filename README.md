@@ -7,13 +7,10 @@
 
 ![logo](https://www.nodemedia.cn/uploads/site_logo.png)
 
-A Node.js implementation of RTMP/HTTP-FLV/WS-FLV/HLS/DASH Media Server  
-[中文介绍](https://github.com/illuspas/Node-Media-Server/blob/master/README_CN.md)  
+## Original project
+[https://github.com/illuspas/Node-Media-Server](https://github.com/illuspas/Node-Media-Server)
 
-**If you like this project you can support me.**  
-<a href="https://www.buymeacoffee.com/illuspas" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-white.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
-
-# Web Admin Panel Source
+## Web Admin Panel Source
 [https://github.com/illuspas/Node-Media-Server-Admin](https://github.com/illuspas/Node-Media-Server-Admin)
 
 # Web Admin Panel Screenshot
@@ -37,32 +34,30 @@ A Node.js implementation of RTMP/HTTP-FLV/WS-FLV/HLS/DASH Media Server
  - Support api control relay
  - Support real-time multi-resolution transcoding
 
+
+## Minimum Requirements 
+- Debian 10+
+- 512mb RAM
+- 1 Core
+
+## Install FFmpeg
+```bash
+apt install ffmpeg
+```
+
+Check the path for ffmpeg using `whereis ffmpeg`. You'll need it for the config in app.js.
+
 # Usage 
 
-## npx 
-```bash
-npx node-media-server
-```
-
-## install as a global program
-```bash
-npm i node-media-server -g
-node-media-server
-```
-
-## docker version
-```bash
-docker run --name nms -d -p 1935:1935 -p 8000:8000 -p 8443:8443 illuspas/node-media-server
-```
-
-## npm version (recommended)
+## npm
 
 ```bash
 mkdir nms
 cd nms
 npm install node-media-server
-vi app.js
+nano app.js
 ```
+
 
 ```js
 const NodeMediaServer = require('node-media-server');
@@ -77,7 +72,22 @@ const config = {
   },
   http: {
     port: 8000,
+    mediaroot: './media',
     allow_origin: '*'
+  },
+  trans: {
+    ffmpeg: '/usr/bin/ffmpeg',
+    tasks: [
+      {
+        app: 'live',
+        hls: true,
+        hlsFlags: '[hls_time=2:hls_list_size=3:hls_flags=delete_segments]',
+        hlsKeep: true, // to prevent hls file delete after end the stream
+        dash: true,
+        dashFlags: '[f=dash:window_size=3:extra_window_size=5]',
+        dashKeep: true // to prevent dash file delete after end the stream
+      }
+    ]
   }
 };
 
@@ -88,6 +98,7 @@ nms.run();
 ```bash
 node app.js
 ```
+
 
 # Publishing live streams
 ## From FFmpeg
@@ -724,40 +735,3 @@ fission: {
   ]
 }
 ```
-
-# Publisher and Player App/SDK
-
-## Android Livestream App
-https://play.google.com/store/apps/details?id=cn.nodemedia.qlive  
-http://www.nodemedia.cn/uploads/qlive-release.apk  
-
-## Android SDK
-https://github.com/NodeMedia/NodeMediaClient-Android
-
-## iOS SDK
-https://github.com/NodeMedia/NodeMediaClient-iOS
-
-## React-Native SDK
-https://github.com/NodeMedia/react-native-nodemediaclient
-
-## NodePlayer.js HTML5 live player
-* Implemented with asm.js / wasm
-* http-flv/ws-flv
-* H.264/H.265 + AAC/Nellymoser/G.711 decoder
-* Ultra low latency (Support for iOS safari browser)
-
-http://www.nodemedia.cn/products/node-media-player
-
-## Windows browser plugin(ActiveX/NPAPI)
-* H.264/H.265+AAC rtmp publisher
-* Camera/Desktop + Microphone capture
-* Nvidia/AMD/Intel Hardware acceleration Encoder/Decoder
-* Ultra low latency rtmp/rtsp/http live player
-* Only 6MB installation package
-
-http://www.nodemedia.cn/products/node-media-client/win
-
-# Thanks
-Sorng Sothearith, standifer1023, floatflower, Christopher Thomas, strive, jaysonF, 匿名, 李勇, 巴草根, ZQL, 陈勇至, -Y, 高山流水, 老郭, 孙建, 不说本可以, Jacky, 人走茶凉，树根, 疯狂的台灯, 枫叶, lzq, 番茄, smicroz , kasra.shahram, 熊科辉, Ken Lee , Erik Herz, Javier Gomez, trustfarm, leeoxiang, Aaron Turner， Anonymous  
-
-Thank you for your support.
